@@ -8,17 +8,15 @@ def branches = branchChoices(repoUrl: REPO_URL)
 
 pipeline {
     agent { node { label "master" } }
-
     options {
         ansiColor('xterm')
         timestamps()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
-
     tools {
-        jdk 'java-21'          // Global Tool의 이름
-        maven 'maven-3'         // Global Tool의 이름
+        jdk 'java-21'
+        maven 'maven-3'
     }
     environment {
         APP_NAME = 'springboot-helloworld'
@@ -39,6 +37,7 @@ pipeline {
                 }
             }
         }
+
         stage('Checkout Source') {
             steps {
                 echo "branches = ${branches}"
@@ -46,6 +45,7 @@ pipeline {
                 git branch: 'develop', url: 'https://github.com/stevenjsmin/stevenlab-springboot-helloworld.git'
             }
         }
+
         stage('Build Artifact') {
             steps {
                 sh "mvn -B versions:set -DnewVersion=${params.VERSION} versions:commit"
@@ -63,7 +63,7 @@ pipeline {
             steps {
                 script {
                     DOCKER_IMAGE = "${REGISTRY}/${DOCKER_REPO}/${APP_NAME}:${params.VERSION ?: env.BUILD_NUMBER}"
-                    // 방법 1) Docker Pipeline 플러그인 사용 (권장)
+
                     docker.withRegistry("https://${env.REGISTRY}", 'jfrog-docker') {
                         if (params.MULTI_ARCH) {
                             sh """
@@ -90,16 +90,9 @@ pipeline {
     post {
         success {
             echo "✅ Build & Deploy 성공"
-            // echo "Maven artifact: groupId/artifactId=${readMavenPom().groupId}/${readMavenPom().artifactId}, version=${params.VERSION}"
-            echo "Maven artifact: groupId/artifactId="
-            echo "Docker image: --"
         }
         failure {
             echo "❌ 실패: 콘솔 로그를 확인하세요."
-        }
-        always {
-            // sh "rm -f ${env.MVN_SETTINGS} || true"
-            sh "echo 'Great Job!!'"
         }
     }
 }
