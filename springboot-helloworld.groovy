@@ -41,7 +41,7 @@ pipeline {
         stage('Checkout Source') {
             steps {
                 // Jenkins에 등록된 Git credentials를 사용하려면 credentialsId 지정
-                git branch: "${param.BRANCH}", url: 'https://github.com/stevenjsmin/stevenlab-springboot-helloworld.git'
+                git branch: "${params.BRANCH}", url: 'https://github.com/stevenjsmin/stevenlab-springboot-helloworld.git'
             }
         }
 
