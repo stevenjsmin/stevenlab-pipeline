@@ -14,10 +14,10 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
-    // tools {
-    //     jdk 'java-21'
-    //     maven 'maven-3'
-    // }
+    tools {
+        jdk 'java-21'
+        maven 'maven-3'
+    }
     environment {
         APP_NAME = 'springboot-helloworld'
         REGISTRY = 'trialqdcy13.jfrog.io'
@@ -32,6 +32,7 @@ pipeline {
                             string(name: 'VERSION', defaultValue: "1.0.${env.BUILD_NUMBER}", description: 'App version(E.G: 1.0.123)'),
                             choice(name: 'BRANCH', choices: branches.join('\n'), description: 'Choose a branch to checkout'),
                             booleanParam(name: 'SKIP_TESTS', defaultValue: true, description: 'Check this option to skip testing phase'),
+                            booleanParam(name: 'SKIP_DOCKER', defaultValue: false, description: 'Uncheck this to build and register a Docker image'),
                             booleanParam(name: 'MULTI_ARCH', defaultValue: false, description: 'Build/Push for multiple architecture(amd64,arm64)'),
                     ])])
                 }
@@ -59,6 +60,9 @@ pipeline {
         }
 
         stage('Docker Build & Push') {
+            when {
+                expression { return !params.SKIP_DOCKER }
+            }
             steps {
                 script {
                     DOCKER_IMAGE = "${REGISTRY}/${DOCKER_REPO}/${APP_NAME}:${params.VERSION ?: env.BUILD_NUMBER}"
