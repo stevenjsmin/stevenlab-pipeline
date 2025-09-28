@@ -4,7 +4,7 @@
 def echoMessage
 
 pipeline {
-    agent { node { label "aws-ec2" } }
+    agent { node { label "master" } }
 
     options {
         ansiColor('xterm')
