@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-@Library(value='cicd-shared-libs@master', changelog=false) _
+@Library(value='cicd-shared-libs@develop', changelog=false) _
 
 def echoMessage
 
