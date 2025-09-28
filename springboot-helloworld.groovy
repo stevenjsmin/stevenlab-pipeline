@@ -14,10 +14,10 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
-    tools {
-        jdk 'java-21'
-        maven 'maven-3'
-    }
+    // tools {
+    //     jdk 'java-21'
+    //     maven 'maven-3'
+    // }
     environment {
         APP_NAME = 'springboot-helloworld'
         REGISTRY = 'trialqdcy13.jfrog.io'
@@ -40,9 +40,8 @@ pipeline {
 
         stage('Checkout Source') {
             steps {
-                echo "branches = ${branches}"
                 // Jenkins에 등록된 Git credentials를 사용하려면 credentialsId 지정
-                git branch: 'develop', url: 'https://github.com/stevenjsmin/stevenlab-springboot-helloworld.git'
+                git branch: "${param.BRANCH}", url: 'https://github.com/stevenjsmin/stevenlab-springboot-helloworld.git'
             }
         }
 
