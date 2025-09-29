@@ -21,8 +21,8 @@ pipeline {
                     properties([parameters([
                             string(name: 'VERSION', defaultValue: "1.0.${env.BUILD_NUMBER}", description: 'App version(E.G: 1.0.123)'),
                             choice(name: 'BRANCH', choices: branches.join('\n'), description: 'Choose a branch to checkout'),
-                            booleanParam(name: 'RUN_PWS_FILE', defaultValue: false, description: 'To run a PowerShell script as a file.'),
-                            booleanParam(name: 'RUN_INLINE', defaultValue: false, description: 'To run a PowerShell script as an in-line.'),
+                            booleanParam(name: 'RUN_PWS_FILE', defaultValue: true, description: 'To run a PowerShell script as a file.'),
+                            booleanParam(name: 'RUN_INLINE', defaultValue: true, description: 'To run a PowerShell script as an in-line.'),
                     ])])
                 }
             }
